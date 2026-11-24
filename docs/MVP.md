@@ -174,7 +174,7 @@ ControlStock/
 │               ├── schemas.py
 │               ├── services.py
 │               └── router.py
-├── alembic/                           # Database migration scripts
+├── migrations/                        # Alembic database migration scripts
 ├── tests/
 │   ├── conftest.py                    # Pytest fixtures and test database setup
 │   ├── unit/                          # Isolated business rule unit tests
