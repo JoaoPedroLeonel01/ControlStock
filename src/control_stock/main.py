@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 
+from src.control_stock.core.config import settings
+
 app = FastAPI(
-    title="ControlStock API",
+    title=settings.APP_NAME,
     description="Inventory Management System for Apparel E-commerce",
     version="0.1.0",
 )
