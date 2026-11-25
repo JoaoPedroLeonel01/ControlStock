@@ -34,10 +34,10 @@ Designed with a dual purpose:
 
 ## Key Features (MVP)
 
-- **Clothing Matrix Catalog:** Parent products with variant combinations (Sizes: letters and numbers, Colors/Prints, individual cost/retail pricing, and auto-generated SKUs).
-- **Three-Tier Stock Balance:** Real-time tracking of `Physical`, `Reserved`, and `Available` (`Physical - Reserved`) quantities.
+- **Clothing Matrix Catalog:** Parent products with variant combinations (reusable size grids with letters or numbers, Colors/Prints, per-product price tiers with price history, and auto-generated SKUs).
+- **Three-Tier Stock Levels:** Real-time tracking of `Physical`, `Reserved`, and `Available` (`Physical - Reserved`) quantities.
 - **Stock Reservation Engine:** 10-minute temporary reservation window for PIX checkout, with instantaneous settlement for credit/debit cards.
-- **Zero-Negative Guarantee:** Database-level check constraints preventing negative inventory balances under any circumstance.
+- **Zero-Negative Guarantee:** Database-level check constraints preventing negative stock quantities under any circumstance.
 - **Immutable Inventory Ledger:** Audit trail tracking every inbound batch, outbound order, customer return with mandatory reason, and physical adjustment.
 - **Reporting & Alerts:** Low-stock threshold alerts, valuation reports (total invested cost vs. potential retail revenue), and category/status filtering.
 
