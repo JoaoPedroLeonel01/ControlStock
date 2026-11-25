@@ -3,12 +3,9 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from src.control_stock import models  # noqa: F401  (registers all tables)
 from src.control_stock.core.config import settings
 from src.control_stock.core.database import Base
-
-# NOTE: models must be imported so autogenerate can detect their tables.
-# Once they exist, add to the import block above (ruff keeps it sorted):
-#     from src.control_stock import models  # noqa: F401
 
 config = context.config
 
