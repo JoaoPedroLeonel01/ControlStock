@@ -12,6 +12,7 @@ from collections.abc import Iterator
 import pytest
 from alembic import command
 from alembic.config import Config
+from fastapi.testclient import TestClient
 from sqlalchemy import Engine, create_engine, text
 from sqlalchemy.engine import make_url
 from sqlalchemy.orm import Session
@@ -72,3 +73,16 @@ def migrated_engine(test_db_url: str) -> Iterator[Engine]:
 def db_session(migrated_engine: Engine) -> Iterator[Session]:
     with rolled_back_session(migrated_engine) as session:
         yield session
+
+
+@pytest.fixture
+def client(db_session: Session) -> Iterator[TestClient]:
+    """API client whose requests share the test's rolled-back session."""
+    from src.control_stock.core.database import get_db
+    from src.control_stock.main import app
+
+    app.dependency_overrides[get_db] = lambda: db_session
+    try:
+        yield TestClient(app)
+    finally:
+        app.dependency_overrides.clear()
