@@ -90,7 +90,7 @@ pytest --cov
 
 ## Deployment (Render + Neon)
 
-The API runs on [Render](https://render.com) (Docker, free plan) and the database on
+The API runs on [Render](https://render.com) (native Python runtime, free plan) and the database on
 [Neon](https://neon.com) (PostgreSQL 16, free plan). This repository is a prototype:
 all data is fictitious.
 
@@ -100,10 +100,16 @@ all data is fictitious.
 2. **Configuration:** in the Render service, set the environment variable
    `DATABASE_URL` to that connection string. Never commit it. `postgresql://` is
    converted to the psycopg driver automatically and `?sslmode=require` is kept.
-3. **Deploy:** the container runs `alembic upgrade head` before starting Uvicorn
-   (Render's free plan has no Pre-Deploy Command). If a migration fails, the
-   container exits and the error appears in the Render logs; the database is left
-   unchanged because migrations run in a single transaction.
+3. **Deploy:** set the Render **Start Command** to
+
+   ```bash
+   alembic upgrade head && uvicorn src.control_stock.main:app --host 0.0.0.0 --port $PORT
+   ```
+
+   (Render's free plan has no Pre-Deploy Command). If a migration fails, the deploy
+   fails, the previous version stays live and the error appears in the Render logs;
+   the database is left unchanged because migrations run in a single transaction.
+   The Docker image's `CMD` does the same when the app runs as a container.
 
 > Free-plan behavior: the Render service sleeps when idle and the Neon compute
 > suspends after 5 minutes without queries, so the first request after a pause is
