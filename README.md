@@ -83,8 +83,29 @@ alembic check               # fail if models and migrations are out of sync
 
 ```bash
 ruff check . && ruff format --check .
-pytest --cov
+pytest --cov                # fails below 80% coverage
 ```
+
+### Tests
+
+- `tests/unit/` — no database needed.
+- `tests/integration/` — run against a real PostgreSQL 16: the database rules
+  (stock triggers, CHECK constraints, immutable ledger) and concurrent
+  reservations of the last unit.
+
+Integration tests use their **own** database, set in `TEST_DATABASE_URL` (read
+from the shell, not from `.env`). Its name must end in `_test`; it is created
+automatically and its schema is rebuilt with `alembic upgrade head` on every run,
+so never point it at a database you care about. Use the same server and
+credentials as `DATABASE_URL`:
+
+```bash
+export TEST_DATABASE_URL=postgresql+psycopg://control_stock_user:control_stock_pass@localhost:5432/control_stock_test
+pytest
+```
+
+Without `TEST_DATABASE_URL` the integration tests are skipped. In CI it is
+required: the run aborts if it is missing.
 
 ---
 
