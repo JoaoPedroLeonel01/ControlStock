@@ -43,6 +43,27 @@ Designed with a dual purpose:
 
 ---
 
+## API (implemented)
+
+Interactive docs at `/docs` (Swagger) and `/redoc`. Errors use
+`{"detail": {"code": "...", "message": "...", ...}}`.
+
+| Method & Path | What it does | Main responses |
+| :--- | :--- | :--- |
+| `POST /api/v1/reservations` | Reserve every item of a PIX checkout for **10 minutes**, all or nothing. Body: `order_reference` (single use) + `items: [{sku, quantity}]`. | `201` · `404 sku_not_found` · `409 insufficient_stock` / `order_reference_used` · `422` |
+| `GET /api/v1/reservations/{order_reference}` | Reservations of an order. | `200` · `404` |
+| `POST /api/v1/reservations/{order_reference}/confirm` | PIX paid: reservations become a sale. Optional body `prices: [{sku, sale_unit_price}]`; default is the tier's current retail price. Repeating it is harmless. | `200` · `410 payment_too_late` (refund) · `409 order_cancelled` / `missing_sale_price` · `422 price_for_unknown_sku` |
+| `POST /api/v1/reservations/{order_reference}/cancel` | Checkout abandoned: release the stock. | `200` · `404` · `409 order_not_active` |
+| `POST /api/v1/reservations/expire` | Release every expired reservation (global sweep). | `200 {"released": n}` |
+| `GET /api/v1/stock/{sku}` | Physical, reserved and available quantities. | `200` · `404` |
+
+**Expiry without a scheduler:** the free hosting plan has no cron and sleeps when
+idle, so expired reservations are released lazily — before a SKU is reserved or
+its stock is read — and by the sweep endpoint. Expiry always uses the database
+clock.
+
+---
+
 ## Local Development
 
 ```bash
