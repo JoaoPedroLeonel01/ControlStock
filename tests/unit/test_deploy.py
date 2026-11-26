@@ -1,6 +1,6 @@
 from pathlib import Path
 
-DOCKERFILE = Path(__file__).resolve().parents[1] / "Dockerfile"
+DOCKERFILE = Path(__file__).resolve().parents[2] / "Dockerfile"
 
 
 def test_container_runs_migrations_before_uvicorn() -> None:
