@@ -25,6 +25,13 @@ def test_database_url_is_required(monkeypatch: pytest.MonkeyPatch) -> None:
             "postgresql+psycopg://u:p@h:5432/db",
             "postgresql+psycopg://u:p@h:5432/db",
         ),
+        # Neon connection string: the query string (TLS options) must survive.
+        (
+            "postgresql://u:p@ep-x-123.us-east-2.aws.neon.tech/neondb"
+            "?sslmode=require&channel_binding=require",
+            "postgresql+psycopg://u:p@ep-x-123.us-east-2.aws.neon.tech/neondb"
+            "?sslmode=require&channel_binding=require",
+        ),
     ],
 )
 def test_sqlalchemy_database_url_normalizes_driver(raw_url: str, expected: str) -> None:
