@@ -1,9 +1,16 @@
 """SQLAlchemy 2.0 database engine, session factory, and declarative base."""
 
 from collections.abc import Generator
+from datetime import datetime
 
-from sqlalchemy import MetaData, create_engine
-from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
+from sqlalchemy import DateTime, MetaData, create_engine, func
+from sqlalchemy.orm import (
+    DeclarativeBase,
+    Mapped,
+    Session,
+    mapped_column,
+    sessionmaker,
+)
 
 from src.control_stock.core.config import settings
 
@@ -45,6 +52,17 @@ class Base(DeclarativeBase):
     """Base class for all SQLAlchemy declarative models."""
 
     metadata = MetaData(naming_convention=NAMING_CONVENTION)
+
+
+class TimestampMixin:
+    """Adds created_at/updated_at columns filled by the database."""
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
 
 
 def get_db() -> Generator[Session, None, None]:
